@@ -33,7 +33,8 @@ class BaseStruct(Generic[T]):
 
     def __post_init__(self):
         if not isinstance(self._scene_idxs, torch.Tensor):
-            self._scene_idxs = common.to_tensor(self._scene_idxs).to(torch.int)
+            self._scene_idxs = common.to_tensor(self._scene_idxs)
+        self._scene_idxs = self._scene_idxs.to(torch.int).to(self.device)
 
     def __str__(self):
         return f"<struct of type {self.__class__}; managing {self._num_objs} {self._objs[0].__class__} objects>"
@@ -52,10 +53,7 @@ class BaseStruct(Generic[T]):
 
     @property
     def device(self):
-        if physx.is_gpu_enabled():
-            return torch.device("cuda")
-        else:
-            return torch.device("cpu")
+        return self.scene.device
 
     @property
     def _num_objs(self):
@@ -107,7 +105,7 @@ class PhysxRigidBodyComponentStruct(PhysxRigidBaseComponentStruct[T], Generic[T]
         """a list of indexes of each GPU rigid body in the `px.cuda_rigid_body_data` buffer, one for each element in `self._objs`"""
         if self._body_data_index_internal is None:
             self._body_data_index_internal = torch.tensor(
-                [body.gpu_pose_index for body in self._bodies], device="cuda"
+                [body.gpu_pose_index for body in self._bodies], device=self.device
             )
         return self._body_data_index_internal
 
@@ -208,6 +206,9 @@ class PhysxRigidBodyComponentStruct(PhysxRigidBaseComponentStruct[T], Generic[T]
     @property
     def angular_velocity(self) -> torch.Tensor:
         if physx.is_gpu_enabled():
+            # NOTE (stao): Currently physx has a bug that sapien inherits where link bodies on the GPU put linear/angular velocities in the wrong order...
+            if isinstance(self._objs[0], physx.PhysxArticulationLinkComponent):
+                return self._body_data[self._body_data_index, 7:10]
             return self._body_data[self._body_data_index, 10:13]
         else:
             return torch.from_numpy(self._bodies[0].angular_velocity[None, :])
@@ -260,6 +261,9 @@ class PhysxRigidBodyComponentStruct(PhysxRigidBaseComponentStruct[T], Generic[T]
     @property
     def linear_velocity(self) -> torch.Tensor:
         if physx.is_gpu_enabled():
+            # NOTE (stao): Currently physx has a bug that sapien inherits where link bodies on the GPU put linear/angular velocities in the wrong order...
+            if isinstance(self._objs[0], physx.PhysxArticulationLinkComponent):
+                return self._body_data[self._body_data_index, 10:13]
             return self._body_data[self._body_data_index, 7:10]
         else:
             return torch.from_numpy(self._bodies[0].linear_velocity[None, :])
@@ -342,7 +346,9 @@ class PhysxRigidDynamicComponentStruct(PhysxRigidBodyComponentStruct[T], Generic
     @property
     def angular_velocity(self) -> torch.Tensor:
         if physx.is_gpu_enabled():
-            # TODO (stao): turn 10:13 etc. slices into constants
+            # NOTE (stao): Currently physx has a bug that sapien inherits where link bodies on the GPU put linear/angular velocities in the wrong order...
+            if isinstance(self._objs[0], physx.PhysxArticulationLinkComponent):
+                return self._body_data[self._body_data_index, 7:10]
             return self._body_data[self._body_data_index, 10:13]
         else:
             return torch.from_numpy(self._bodies[0].angular_velocity[None, :])
@@ -411,6 +417,9 @@ class PhysxRigidDynamicComponentStruct(PhysxRigidBodyComponentStruct[T], Generic
     @property
     def linear_velocity(self) -> torch.Tensor:
         if physx.is_gpu_enabled():
+            # NOTE (stao): Currently physx has a bug that sapien inherits where link bodies on the GPU put linear/angular velocities in the wrong order...
+            if isinstance(self._objs[0], physx.PhysxArticulationLinkComponent):
+                return self._body_data[self._body_data_index, 10:13]
             return self._body_data[self._body_data_index, 7:10]
         else:
             return torch.from_numpy(self._bodies[0].linear_velocity[None, :])

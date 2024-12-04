@@ -12,6 +12,7 @@ from mani_skill.agents.controllers import *
 from mani_skill.agents.registration import register_agent
 from mani_skill.utils import common, sapien_utils
 from mani_skill.utils.structs.actor import Actor
+from mani_skill.sensors.camera import CameraConfig
 
 
 @register_agent()
@@ -60,8 +61,8 @@ class PandaStick(BaseAgent):
         )
         arm_pd_joint_delta_pos = PDJointPosControllerConfig(
             self.arm_joint_names,
-            lower=-0.1,
-            upper=0.1,
+            lower=-0.05,
+            upper=0.05,
             stiffness=self.arm_stiffness,
             damping=self.arm_damping,
             force_limit=self.arm_force_limit,
@@ -85,8 +86,8 @@ class PandaStick(BaseAgent):
             joint_names=self.arm_joint_names,
             pos_lower=-0.1,
             pos_upper=0.1,
-            rot_lower=-0.1,
-            rot_upper=0.1,
+            rot_lower=-0.3,
+            rot_upper=0.3,
             stiffness=self.arm_stiffness,
             damping=self.arm_damping,
             force_limit=self.arm_force_limit,
@@ -164,3 +165,18 @@ class PandaStick(BaseAgent):
     def is_static(self, threshold: float = 0.2):
         qvel = self.robot.get_qvel()[..., :-2]
         return torch.max(torch.abs(qvel), 1)[0] <= threshold
+    
+    # @property
+    # def _sensor_configs(self):
+    #     return [
+    #         CameraConfig(
+    #             uid="hand_camera",
+    #             pose=sapien.Pose(p=[0.005, 0, 0.02], q=[1, 0, 0, 0]),
+    #             width=224,
+    #             height=224,
+    #             fov=np.pi / 2,
+    #             near=0.01,
+    #             far=100,
+    #             mount=self.robot.links_map["camera_link"],
+    #         )
+    #     ]

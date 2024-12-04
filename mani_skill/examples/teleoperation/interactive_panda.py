@@ -63,7 +63,7 @@ def main(args):
         control_mode="pd_joint_pos",
         render_mode="rgb_array",
         reward_mode="sparse",
-        shader_dir="rt-med",
+        # shader_dir="rt-med",
     )
     env = RecordEpisode(
         env,
@@ -95,16 +95,16 @@ def solve(env: BaseEnv, debug=False, vis=False):
         "pd_joint_pos",
         "pd_joint_pos_vel",
     ], env.unwrapped.control_mode
-    planner = PandaArmMotionPlanningSolver(
-        env,
-        debug=debug,
-        vis=vis,
-        base_pose=env.unwrapped.agent.robot.pose,
-        visualize_target_grasp_pose=False,
-        print_env_info=False,
-        joint_acc_limits=0.5,
-        joint_vel_limits=0.5,
-    )
+    # planner = PandaArmMotionPlanningSolver(
+    #     env,
+    #     debug=debug,
+    #     vis=vis,
+    #     base_pose=env.unwrapped.agent.robot.pose,
+    #     visualize_target_grasp_pose=False,
+    #     print_env_info=False,
+    #     joint_acc_limits=0.5,
+    #     joint_vel_limits=0.5,
+    # )
     viewer = env.render_human()
 
     last_checkpoint_state = None
@@ -152,14 +152,14 @@ def solve(env: BaseEnv, debug=False, vis=False):
         #     pass
         elif viewer.window.key_press("n"):
             execute_current_pose = True
-        elif viewer.window.key_press("g"):
-            if gripper_open:
-                gripper_open = False
-                _, reward, _ ,_, info = planner.close_gripper()
-            else:
-                gripper_open = True
-                _, reward, _ ,_, info = planner.open_gripper()
-            print(f"Reward: {reward}, Info: {info}")
+        # elif viewer.window.key_press("g"):
+        #     if gripper_open:
+        #         gripper_open = False
+        #         _, reward, _ ,_, info = planner.close_gripper()
+        #     else:
+        #         gripper_open = True
+        #         _, reward, _ ,_, info = planner.open_gripper()
+        #     print(f"Reward: {reward}, Info: {info}")
         # # TODO left, right depend on orientation really.
         # elif viewer.window.key_press("down"):
         #     pose = planner.grasp_pose_visual.pose

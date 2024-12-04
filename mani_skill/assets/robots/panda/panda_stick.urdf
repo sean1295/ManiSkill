@@ -4,10 +4,13 @@
 <!-- |    EDITING THIS FILE BY HAND IS NOT RECOMMENDED                                 | -->
 <!-- =================================================================================== -->
 <robot name="panda">
+  <material name="aluminum">
+    <color rgba="0.5 0.5 0.5 1"/>
+  </material>
   <link name="panda_link0">
     <visual>
       <geometry>
-        <mesh filename="franka_description/meshes/visual/link0.dae"/>
+        <mesh filename="franka_description/meshes/visual/link0.glb"/>
       </geometry>
     </visual>
     <collision>
@@ -24,7 +27,7 @@
   <link name="panda_link1">
     <visual>
       <geometry>
-        <mesh filename="franka_description/meshes/visual/link1.dae"/>
+        <mesh filename="franka_description/meshes/visual/link1.glb"/>
       </geometry>
     </visual>
     <collision>
@@ -50,7 +53,7 @@
   <link name="panda_link2">
     <visual>
       <geometry>
-        <mesh filename="franka_description/meshes/visual/link2.dae"/>
+        <mesh filename="franka_description/meshes/visual/link2.glb"/>
       </geometry>
     </visual>
     <collision>
@@ -76,7 +79,7 @@
   <link name="panda_link3">
     <visual>
       <geometry>
-        <mesh filename="franka_description/meshes/visual/link3.dae"/>
+        <mesh filename="franka_description/meshes/visual/link3.glb"/>
       </geometry>
     </visual>
     <collision>
@@ -102,7 +105,7 @@
   <link name="panda_link4">
     <visual>
       <geometry>
-        <mesh filename="franka_description/meshes/visual/link4.dae"/>
+        <mesh filename="franka_description/meshes/visual/link4.glb"/>
       </geometry>
     </visual>
     <collision>
@@ -128,7 +131,7 @@
   <link name="panda_link5">
     <visual>
       <geometry>
-        <mesh filename="franka_description/meshes/visual/link5.dae"/>
+        <mesh filename="franka_description/meshes/visual/link5.glb"/>
       </geometry>
     </visual>
     <collision>
@@ -154,7 +157,7 @@
   <link name="panda_link6">
     <visual>
       <geometry>
-        <mesh filename="franka_description/meshes/visual/link6.dae"/>
+        <mesh filename="franka_description/meshes/visual/link6.glb"/>
       </geometry>
     </visual>
     <collision>
@@ -180,7 +183,7 @@
   <link name="panda_link7">
     <visual>
       <geometry>
-        <mesh filename="franka_description/meshes/visual/link7.dae"/>
+        <mesh filename="franka_description/meshes/visual/link7.glb"/>
       </geometry>
     </visual>
     <collision>
@@ -217,7 +220,7 @@
   <link name="panda_hand">
     <visual>
       <geometry>
-        <mesh filename="franka_description/meshes/visual/hand.dae" />
+        <mesh filename="franka_description/meshes/visual/hand.glb" />
       </geometry>
     </visual>
     <visual>
@@ -225,6 +228,9 @@
       <geometry>
         <capsule radius="0.008" length="0.1"/>
       </geometry>
+      <material name="grey">
+        <color rgba="0.05 0.05 0.05 1.0"/>
+      </material>
     </visual>
     <collision>
       <geometry>
@@ -244,4 +250,5 @@
     <parent link="panda_hand"/>
     <child link="panda_hand_tcp"/>
   </joint>
+  
 </robot>
